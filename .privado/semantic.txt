@@ -1,0 +1,5 @@
+Custom customSinkSemantics semantics
+"airflow/operators.py:<module>.EmailOperator.__init__" 0->-1 0->0 0 "task_id"->-1 0 "task_id"->0 "task_id" 1->-1 1->1 1 "to"->-1 1 "to"->1 "to" 2->-1 2->2 2 "subject"->-1 2 "subject"->2 "subject" 3->-1 3->3 3 "html_content"->-1 3 "html_content"->3 "html_content" 4->-1 4->4 4 "dag"->-1 4 "dag"->4 "dag" 5->-1 5->5
+------------------------------------------
+Custom semanticFromConfig semantics
+------------------------------------------

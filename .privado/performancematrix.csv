@@ -1,0 +1,37 @@
+DateTime, MainStage, SubStage, MetaData, CPU (%), Used Memory (MB), Max Heap (MB)
+Fri May 03 14:50:27 IST 2024, <not set>, <not set>, <not set>, 0.00, 54.95, 4294.97
+Fri May 03 14:50:27 IST 2024, Language detection, <not set>, Started, 16.69, 55.51, 4294.97
+Fri May 03 14:50:28 IST 2024, Language detection, <not set>, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:28 IST 2024, Processing rules, <not set>, Started, 22.74, 25.09, 4294.97
+Fri May 03 14:50:28 IST 2024, Processing rules, <not set>, <not set>, 57.59, 51.40, 4294.97
+Fri May 03 14:50:29 IST 2024, Processing rules, <not set>, Done, 57.59, 51.40, 4294.97
+Fri May 03 14:50:29 IST 2024, Privado source passes, <not set>, Started, 59.96, 39.72, 4294.97
+Fri May 03 14:50:29 IST 2024, Privado source passes, ai.privado.passes.HTMLParserPass, Started, 19.10, 40.76, 4294.97
+Fri May 03 14:50:29 IST 2024, Privado source passes, ai.privado.passes.HTMLParserPass, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:29 IST 2024, Privado source passes, ai.privado.passes.SQLParser, Started, 20.67, 40.76, 4294.97
+Fri May 03 14:50:29 IST 2024, Privado source passes, ai.privado.passes.SQLParser, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:29 IST 2024, Privado source passes, ai.privado.passes.DBTParserPass, Started, 23.99, 40.76, 4294.97
+Fri May 03 14:50:29 IST 2024, Privado source passes, ai.privado.passes.DBTParserPass, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:29 IST 2024, Privado source passes, ai.privado.passes.HighTouchPass, Started, 22.18, 41.82, 4294.97
+Fri May 03 14:50:29 IST 2024, Privado source passes, ai.privado.passes.HighTouchPass, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:29 IST 2024, Privado source passes, <not set>, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:29 IST 2024, Run oss data flow, <not set>, Started, 32.11, 54.40, 4294.97
+Fri May 03 14:50:29 IST 2024, Run oss data flow, io.joern.dataflowengineoss.passes.reachingdef.ReachingDefPass, Started, 19.28, 55.44, 4294.97
+Fri May 03 14:50:29 IST 2024, Run oss data flow, io.joern.dataflowengineoss.passes.reachingdef.ReachingDefPass, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:29 IST 2024, Run oss data flow, io.shiftleft.semanticcpg.Overlays$$anon$1, Started, 15.94, 55.44, 4294.97
+Fri May 03 14:50:29 IST 2024, Run oss data flow, io.shiftleft.semanticcpg.Overlays$$anon$1, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:29 IST 2024, Run oss data flow, <not set>, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:29 IST 2024, Tagging ..., <not set>, Started, 29.91, 55.44, 4294.97
+Fri May 03 14:50:29 IST 2024, Tagging ..., ai.privado.tagger.source.SqlQueryTagger, Started, 18.43, 55.44, 4294.97
+Fri May 03 14:50:29 IST 2024, Tagging ..., ai.privado.tagger.source.SqlQueryTagger, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:29 IST 2024, Tagging ..., ai.privado.languageEngine.default.tagger.HighTouchSinkTagger, Started, 67.48, 59.63, 4294.97
+Fri May 03 14:50:29 IST 2024, Tagging ..., ai.privado.languageEngine.default.tagger.HighTouchSinkTagger, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:29 IST 2024, Tagging ..., <not set>, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:29 IST 2024, Finding data flows ..., <not set>, Started, 36.22, 63.82, 4294.97
+Fri May 03 14:50:29 IST 2024, Finding data flows ..., Deduplicating flows, Started, 16.85, 64.88, 4294.97
+Fri May 03 14:50:29 IST 2024, Finding data flows ..., Deduplicating flows, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:29 IST 2024, Finding data flows ..., <not set>, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:29 IST 2024, Brewing result, <not set>, Started, 28.04, 64.88, 4294.97
+Fri May 03 14:50:29 IST 2024, Brewing result, <not set>, Done, 0.00, 0.00, 4294.97
+Fri May 03 14:50:29 IST 2024, All processing done, Total Time taken, 2180 ms - 00h:00m:02s:180ms, 28.79, 53.17, 4294.97
+Fri May 03 14:50:29 IST 2024, <not set>, <not set>, <not set>, 21.05, 81.67, 4294.97

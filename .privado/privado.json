@@ -1,0 +1,171 @@
+{
+  "RepoConfigMetaData" : [
+  ],
+  "monolithJsonPath" : [
+  ],
+  "language" : "python",
+  "privadoLanguageEngineVersion" : "2.0.339",
+  "privadoMainVersion" : "Not Detected",
+  "gitMetadata" : {
+    
+  },
+  "violations" : [
+  ],
+  "PropertyFileSkippedByDirCount" : {
+    "currentFilesInDirLimit" : "10",
+    "skipList" : [
+    ]
+  },
+  "androidPermissions" : [
+  ],
+  "privadoCoreVersion" : "Not Detected",
+  "sinks" : [
+    {
+      "sourceType" : "Sinks",
+      "sinkType" : "storages",
+      "id" : "ThirdParties.Operator.Slackeee",
+      "name" : "Slack storage",
+      "domains" : [
+        "slack.com"
+      ],
+      "apiUrl" : [
+      ],
+      "databaseDetails" : {
+        "dbName" : "",
+        "dbVendor" : "",
+        "dbLocation" : "",
+        "dbOperation" : "",
+        "configFile" : "",
+        "schema" : null
+      }
+    }
+  ],
+  "privadoCLIVersion" : "Not Detected",
+  "collections" : [
+  ],
+  "repoName" : "value",
+  "processing" : [
+    {
+      "sourceId" : "Data.Sensitive.UserContentData.EmailsorTextMessages",
+      "occurrences" : [
+        {
+          "sample" : "email_content",
+          "lineNumber" : 18,
+          "columnNumber" : 2,
+          "fileName" : "index.py",
+          "excerpt" : "   default_args=default_args,\n   description='DAG with EmailOperator',\n   schedule_interval='@once'\n )\n\n email_content = \"Hello\" /* <=== __builtin.str */ \n\n email_task = EmailOperator(\n   task_id='send_email',\n   to='recipient@example.com',\n   subject='Email Notification',",
+          "arguments" : null
+        }
+      ]
+    }
+  ],
+  "dataFlow" : {
+    "storages" : [
+      {
+        "sourceId" : "Data.Sensitive.UserContentData.EmailsorTextMessages",
+        "sinks" : [
+          {
+            "sinkType" : "storages",
+            "id" : "ThirdParties.Operator.Slackeee",
+            "name" : "Slack storage",
+            "category" : "",
+            "domains" : [
+              "slack.com"
+            ],
+            "sensitivity" : "",
+            "isSensitive" : false,
+            "tags" : {
+              
+            },
+            "apiUrl" : [
+            ],
+            "databaseDetails" : {
+              "dbName" : "",
+              "dbVendor" : "",
+              "dbLocation" : "",
+              "dbOperation" : "",
+              "configFile" : "",
+              "schema" : null
+            },
+            "paths" : [
+              {
+                "pathId" : "71-77-80",
+                "path" : [
+                  {
+                    "sample" : "email_content",
+                    "lineNumber" : 18,
+                    "columnNumber" : 2,
+                    "fileName" : "index.py",
+                    "excerpt" : "   default_args=default_args,\n   description='DAG with EmailOperator',\n   schedule_interval='@once'\n )\n\n email_content = \"Hello\" /* <=== __builtin.str */ \n\n email_task = EmailOperator(\n   task_id='send_email',\n   to='recipient@example.com',\n   subject='Email Notification',",
+                    "arguments" : null
+                  },
+                  {
+                    "sample" : "email_content",
+                    "lineNumber" : 24,
+                    "columnNumber" : 17,
+                    "fileName" : "index.py",
+                    "excerpt" : "\n email_task = EmailOperator(\n   task_id='send_email',\n   to='recipient@example.com',\n   subject='Email Notification',\n   html_content=email_content, /* <=== __builtin.str */ \n   dag=dag\n )",
+                    "arguments" : null
+                  },
+                  {
+                    "sample" : "EmailOperator(task_id = 'send_email', to = 'recipient@example.com', subject = 'Email Notification', html_content = email_content, dag = dag)",
+                    "lineNumber" : 20,
+                    "columnNumber" : 15,
+                    "fileName" : "index.py",
+                    "excerpt" : "   schedule_interval='@once'\n )\n\n email_content = \"Hello\"\n\n email_task = EmailOperator( /* <=== airflow/operators.py */ \n   task_id='send_email',\n   to='recipient@example.com',\n   subject='Email Notification',\n   html_content=email_content,\n   dag=dag",
+                    "arguments" : null
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "internal_apis" : [
+    ],
+    "leakages" : [
+    ],
+    "third_parties" : [
+    ]
+  },
+  "probableSinks" : [
+    "airflow.py",
+    "airflow/operators.py"
+  ],
+  "createdAt" : 1714755402469,
+  "sinkProcessing" : [
+    {
+      "sinkId" : "ThirdParties.Operator.Slackeee",
+      "occurrences" : [
+        {
+          "sample" : "EmailOperator(task_id = 'send_email', to = 'recipient@example.com', subject = 'Email Notification', html_content = email_content, dag = dag)",
+          "lineNumber" : 20,
+          "columnNumber" : 15,
+          "fileName" : "index.py",
+          "excerpt" : "   schedule_interval='@once'\n )\n\n email_content = \"Hello\"\n\n email_task = EmailOperator( /* <=== airflow/operators.py */ \n   task_id='send_email',\n   to='recipient@example.com',\n   subject='Email Notification',\n   html_content=email_content,\n   dag=dag",
+          "arguments" : null
+        }
+      ]
+    }
+  ],
+  "PropertyFileSkippedBySize" : {
+    "currentFileSizeLimit" : "5",
+    "skipLists" : [
+    ]
+  },
+  "localScanPath" : "/Users/ankit-privado/Desktop/value",
+  "sources" : [
+    {
+      "sourceType" : "Data Element",
+      "id" : "Data.Sensitive.UserContentData.EmailsorTextMessages",
+      "name" : "Emails or Text Messages",
+      "category" : "User Content Data",
+      "sensitivity" : "medium",
+      "isSensitive" : false,
+      "tags" : {
+        "law" : "GDPR"
+      }
+    }
+  ]
+}
