@@ -17,7 +17,7 @@ class main:
         description='DAG with CustomOperator'
     )
       
-    custom_task = PostgresOperator(
+    custom_task = DoordashIcebergTableOptimizeOperator(
         task_id='cutom_task',
         parameter = "something",
         html_content=firstName,
