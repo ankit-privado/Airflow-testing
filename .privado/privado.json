@@ -4,12 +4,50 @@
   "monolithJsonPath" : [
   ],
   "language" : "python",
-  "privadoLanguageEngineVersion" : "2.0.339",
+  "privadoLanguageEngineVersion" : "2.0.353",
   "privadoMainVersion" : "Not Detected",
   "gitMetadata" : {
-    
+    "branchName" : "master",
+    "commitId" : "5f77bb9fa449af295da1077b1ce078087eceb36c",
+    "remoteUrl" : "https://github.com/ankit-privado/Airflow-testing.git"
   },
   "violations" : [
+    {
+      "policyId" : "Threats.Leakage.isDataLeakingToLog",
+      "policyDetails" : {
+        "name" : "PII data is written to the log files",
+        "policyType" : "threat",
+        "description" : "Sensitive Data written to log files or file system may lead to unauthorized access or exposure to potential attack.",
+        "fix" : "It is not recommended to log Sensitive Data to log files or the file system. The data must be encrypted if it is absolutely necessary to log it.",
+        "action" : "",
+        "tags" : {
+          "CWE-359" : "https://cwe.mitre.org/data/definitions/359.html",
+          "CWE-532" : "https://cwe.mitre.org/data/definitions/532.html",
+          "MSTG-STORAGE-3" : "https://github.com/OWASP/owasp-mstg/blob/master/Document/0x05d-Testing-Data-Storage.md#Testing-Logs-for-Sensitive-Data-MSTG-STORAGE-3",
+          "MITRE" : "Sharing.Exposure"
+        }
+      },
+      "dataFlow" : [
+        {
+          "sourceId" : "Data.Sensitive.ContactData.Address",
+          "sinkId" : "Leakages.Log.Console",
+          "pathIds" : [
+            "35-38-40",
+            "35-38-44-46",
+            "35-38-50-52"
+          ]
+        },
+        {
+          "sourceId" : "Data.Sensitive.LocationData.PreciseLocation",
+          "sinkId" : "Leakages.Log.Console",
+          "pathIds" : [
+            "44-46",
+            "50-52"
+          ]
+        }
+      ],
+      "processing" : null
+    }
   ],
   "PropertyFileSkippedByDirCount" : {
     "currentFilesInDirLimit" : "10",
@@ -22,11 +60,49 @@
   "sinks" : [
     {
       "sourceType" : "Sinks",
-      "sinkType" : "storages",
-      "id" : "ThirdParties.Operator.Slackeee",
-      "name" : "Slack storage",
+      "sinkType" : "third_parties",
+      "id" : "ThirdParties.SDK.Geopy.Google",
+      "name" : "Google",
       "domains" : [
-        "slack.com"
+        "google.com"
+      ],
+      "apiUrl" : [
+      ],
+      "databaseDetails" : {
+        "dbName" : "",
+        "dbVendor" : "",
+        "dbLocation" : "",
+        "dbOperation" : "",
+        "configFile" : "",
+        "schema" : null
+      }
+    },
+    {
+      "sourceType" : "Sinks",
+      "sinkType" : "storages",
+      "id" : "ThirdParties.Operator.MySQL",
+      "name" : "MySQL",
+      "domains" : [
+        "mysql.com"
+      ],
+      "apiUrl" : [
+      ],
+      "databaseDetails" : {
+        "dbName" : "",
+        "dbVendor" : "",
+        "dbLocation" : "",
+        "dbOperation" : "",
+        "configFile" : "",
+        "schema" : null
+      }
+    },
+    {
+      "sourceType" : "Sinks",
+      "sinkType" : "third_parties",
+      "id" : "ThirdParties.Operator.Apache.Iceberg",
+      "name" : "Apache Iceberg",
+      "domains" : [
+        "iceberg.apache.org"
       ],
       "apiUrl" : [
       ],
@@ -43,17 +119,56 @@
   "privadoCLIVersion" : "Not Detected",
   "collections" : [
   ],
-  "repoName" : "value",
+  "repoName" : "Airflow-testing",
   "processing" : [
     {
       "sourceId" : "Data.Sensitive.UserContentData.EmailsorTextMessages",
       "occurrences" : [
         {
           "sample" : "email_content",
-          "lineNumber" : 18,
-          "columnNumber" : 2,
+          "lineNumber" : 24,
+          "columnNumber" : 22,
+          "fileName" : "main.py",
+          "excerpt" : "      \n    email_task = MySqlOperator(\n        task_id='send_email',\n        to='recipient@example.com',\n        subject='Email Notification',\n        html_content=email_content, /* <=== __builtin.str */ \n        dag=dag\n    )",
+          "arguments" : null
+        }
+      ]
+    },
+    {
+      "sourceId" : "Data.Sensitive.PersonalIdentification.FirstName",
+      "occurrences" : [
+        {
+          "sample" : "context.firstName",
+          "lineNumber" : 11,
+          "columnNumber" : 19,
+          "fileName" : "va.py",
+          "excerpt" : "    def __init__(self, my_parameter, *args, **kwargs):\n        super(CustomOperator, self).__init__(*args, **kwargs)\n        self.parameter = parameter\n      \n    def execute(self, context):\n        s3.upload(context.firstName) /* <===  */ \n      \nclass main:\n    dag = DAG(\n        'dag',\n        default_args=default_args,",
+          "arguments" : null
+        }
+      ]
+    },
+    {
+      "sourceId" : "Data.Sensitive.ContactData.Address",
+      "occurrences" : [
+        {
+          "sample" : "address",
+          "lineNumber" : 13,
+          "columnNumber" : 28,
           "fileName" : "index.py",
-          "excerpt" : "   default_args=default_args,\n   description='DAG with EmailOperator',\n   schedule_interval='@once'\n )\n\n email_content = \"Hello\" /* <=== __builtin.str */ \n\n email_task = EmailOperator(\n   task_id='send_email',\n   to='recipient@example.com',\n   subject='Email Notification',",
+          "excerpt" : "\n# Getting latitude and longitude\naddress = geolocator.geocode(location)\n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address) /* <=== geopy/geocoders.py:<module>.GoogleV3.geocode.<returnValue> */ \nprint(\"Latitude:\", address.latitude)\nprint(\"Longitude:\", address.longitude)",
+          "arguments" : null
+        }
+      ]
+    },
+    {
+      "sourceId" : "Data.Sensitive.LocationData.PreciseLocation",
+      "occurrences" : [
+        {
+          "sample" : "address.latitude",
+          "lineNumber" : 14,
+          "columnNumber" : 20,
+          "fileName" : "index.py",
+          "excerpt" : "# Getting latitude and longitude\naddress = geolocator.geocode(location)\n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address)\nprint(\"Latitude:\", address.latitude) /* <===  */ \nprint(\"Longitude:\", address.longitude)",
           "arguments" : null
         }
       ]
@@ -66,11 +181,11 @@
         "sinks" : [
           {
             "sinkType" : "storages",
-            "id" : "ThirdParties.Operator.Slackeee",
-            "name" : "Slack storage",
+            "id" : "ThirdParties.Operator.MySQL",
+            "name" : "MySQL",
             "category" : "",
             "domains" : [
-              "slack.com"
+              "mysql.com"
             ],
             "sensitivity" : "",
             "isSensitive" : false,
@@ -89,30 +204,38 @@
             },
             "paths" : [
               {
-                "pathId" : "71-77-80",
+                "pathId" : "132-138-139-141",
                 "path" : [
                   {
                     "sample" : "email_content",
                     "lineNumber" : 18,
-                    "columnNumber" : 2,
-                    "fileName" : "index.py",
-                    "excerpt" : "   default_args=default_args,\n   description='DAG with EmailOperator',\n   schedule_interval='@once'\n )\n\n email_content = \"Hello\" /* <=== __builtin.str */ \n\n email_task = EmailOperator(\n   task_id='send_email',\n   to='recipient@example.com',\n   subject='Email Notification',",
+                    "columnNumber" : 5,
+                    "fileName" : "main.py",
+                    "excerpt" : "         default_args=default_args,\n         description='DAG with EmailOperator',\n         schedule_interval='@once'\n    )\n      \n    email_content = \"Hello\" /* <=== __builtin.str */ \n      \n    email_task = MySqlOperator(\n        task_id='send_email',\n        to='recipient@example.com',\n        subject='Email Notification',",
                     "arguments" : null
                   },
                   {
                     "sample" : "email_content",
                     "lineNumber" : 24,
-                    "columnNumber" : 17,
-                    "fileName" : "index.py",
-                    "excerpt" : "\n email_task = EmailOperator(\n   task_id='send_email',\n   to='recipient@example.com',\n   subject='Email Notification',\n   html_content=email_content, /* <=== __builtin.str */ \n   dag=dag\n )",
+                    "columnNumber" : 22,
+                    "fileName" : "main.py",
+                    "excerpt" : "      \n    email_task = MySqlOperator(\n        task_id='send_email',\n        to='recipient@example.com',\n        subject='Email Notification',\n        html_content=email_content, /* <=== __builtin.str */ \n        dag=dag\n    )",
                     "arguments" : null
                   },
                   {
-                    "sample" : "EmailOperator(task_id = 'send_email', to = 'recipient@example.com', subject = 'Email Notification', html_content = email_content, dag = dag)",
+                    "sample" : "dag",
+                    "lineNumber" : 25,
+                    "columnNumber" : 13,
+                    "fileName" : "main.py",
+                    "excerpt" : "    email_task = MySqlOperator(\n        task_id='send_email',\n        to='recipient@example.com',\n        subject='Email Notification',\n        html_content=email_content,\n        dag=dag /* <=== airflow.py:<module>.DAG */ \n    )",
+                    "arguments" : null
+                  },
+                  {
+                    "sample" : "MySqlOperator(task_id = 'send_email', to = 'recipient@example.com', subject = 'Email Notification', html_content = email_content, dag = dag)",
                     "lineNumber" : 20,
-                    "columnNumber" : 15,
-                    "fileName" : "index.py",
-                    "excerpt" : "   schedule_interval='@once'\n )\n\n email_content = \"Hello\"\n\n email_task = EmailOperator( /* <=== airflow/operators.py */ \n   task_id='send_email',\n   to='recipient@example.com',\n   subject='Email Notification',\n   html_content=email_content,\n   dag=dag",
+                    "columnNumber" : 18,
+                    "fileName" : "main.py",
+                    "excerpt" : "         schedule_interval='@once'\n    )\n      \n    email_content = \"Hello\"\n      \n    email_task = MySqlOperator( /* <=== <unknownFullName> */ \n        task_id='send_email',\n        to='recipient@example.com',\n        subject='Email Notification',\n        html_content=email_content,\n        dag=dag",
                     "arguments" : null
                   }
                 ]
@@ -125,25 +248,308 @@
     "internal_apis" : [
     ],
     "leakages" : [
+      {
+        "sourceId" : "Data.Sensitive.ContactData.Address",
+        "sinks" : [
+          {
+            "sinkType" : "leakages",
+            "id" : "Leakages.Log.Console",
+            "name" : "Log Console",
+            "category" : "",
+            "domains" : [
+            ],
+            "sensitivity" : "",
+            "isSensitive" : false,
+            "tags" : {
+              
+            },
+            "apiUrl" : [
+            ],
+            "databaseDetails" : {
+              "dbName" : "",
+              "dbVendor" : "",
+              "dbLocation" : "",
+              "dbOperation" : "",
+              "configFile" : "",
+              "schema" : null
+            },
+            "paths" : [
+              {
+                "pathId" : "35-38-40",
+                "path" : [
+                  {
+                    "sample" : "address",
+                    "lineNumber" : 10,
+                    "columnNumber" : 1,
+                    "fileName" : "index.py",
+                    "excerpt" : "\n# Location you want to geocode\nlocation = \"Statue of Liberty\"\n\n# Getting latitude and longitude\naddress = geolocator.geocode(location) /* <=== geopy/geocoders.py:<module>.GoogleV3.geocode.<returnValue> */ \n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address)\nprint(\"Latitude:\", address.latitude)\nprint(\"Longitude:\", address.longitude)",
+                    "arguments" : null
+                  },
+                  {
+                    "sample" : "address",
+                    "lineNumber" : 13,
+                    "columnNumber" : 28,
+                    "fileName" : "index.py",
+                    "excerpt" : "\n# Getting latitude and longitude\naddress = geolocator.geocode(location)\n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address) /* <=== geopy/geocoders.py:<module>.GoogleV3.geocode.<returnValue> */ \nprint(\"Latitude:\", address.latitude)\nprint(\"Longitude:\", address.longitude)",
+                    "arguments" : null
+                  },
+                  {
+                    "sample" : "print(\"Location Address:\", address)",
+                    "lineNumber" : 13,
+                    "columnNumber" : 1,
+                    "fileName" : "index.py",
+                    "excerpt" : "\n# Getting latitude and longitude\naddress = geolocator.geocode(location)\n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address) /* <=== __builtin.print */ \nprint(\"Latitude:\", address.latitude)\nprint(\"Longitude:\", address.longitude)",
+                    "arguments" : null
+                  }
+                ]
+              },
+              {
+                "pathId" : "35-38-44-46",
+                "path" : [
+                  {
+                    "sample" : "address",
+                    "lineNumber" : 10,
+                    "columnNumber" : 1,
+                    "fileName" : "index.py",
+                    "excerpt" : "\n# Location you want to geocode\nlocation = \"Statue of Liberty\"\n\n# Getting latitude and longitude\naddress = geolocator.geocode(location) /* <=== geopy/geocoders.py:<module>.GoogleV3.geocode.<returnValue> */ \n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address)\nprint(\"Latitude:\", address.latitude)\nprint(\"Longitude:\", address.longitude)",
+                    "arguments" : null
+                  },
+                  {
+                    "sample" : "address",
+                    "lineNumber" : 13,
+                    "columnNumber" : 28,
+                    "fileName" : "index.py",
+                    "excerpt" : "\n# Getting latitude and longitude\naddress = geolocator.geocode(location)\n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address) /* <=== geopy/geocoders.py:<module>.GoogleV3.geocode.<returnValue> */ \nprint(\"Latitude:\", address.latitude)\nprint(\"Longitude:\", address.longitude)",
+                    "arguments" : null
+                  },
+                  {
+                    "sample" : "address.latitude",
+                    "lineNumber" : 14,
+                    "columnNumber" : 20,
+                    "fileName" : "index.py",
+                    "excerpt" : "# Getting latitude and longitude\naddress = geolocator.geocode(location)\n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address)\nprint(\"Latitude:\", address.latitude) /* <===  */ \nprint(\"Longitude:\", address.longitude)",
+                    "arguments" : null
+                  },
+                  {
+                    "sample" : "print(\"Latitude:\", address.latitude)",
+                    "lineNumber" : 14,
+                    "columnNumber" : 1,
+                    "fileName" : "index.py",
+                    "excerpt" : "# Getting latitude and longitude\naddress = geolocator.geocode(location)\n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address)\nprint(\"Latitude:\", address.latitude) /* <=== __builtin.print */ \nprint(\"Longitude:\", address.longitude)",
+                    "arguments" : null
+                  }
+                ]
+              },
+              {
+                "pathId" : "35-38-50-52",
+                "path" : [
+                  {
+                    "sample" : "address",
+                    "lineNumber" : 10,
+                    "columnNumber" : 1,
+                    "fileName" : "index.py",
+                    "excerpt" : "\n# Location you want to geocode\nlocation = \"Statue of Liberty\"\n\n# Getting latitude and longitude\naddress = geolocator.geocode(location) /* <=== geopy/geocoders.py:<module>.GoogleV3.geocode.<returnValue> */ \n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address)\nprint(\"Latitude:\", address.latitude)\nprint(\"Longitude:\", address.longitude)",
+                    "arguments" : null
+                  },
+                  {
+                    "sample" : "address",
+                    "lineNumber" : 13,
+                    "columnNumber" : 28,
+                    "fileName" : "index.py",
+                    "excerpt" : "\n# Getting latitude and longitude\naddress = geolocator.geocode(location)\n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address) /* <=== geopy/geocoders.py:<module>.GoogleV3.geocode.<returnValue> */ \nprint(\"Latitude:\", address.latitude)\nprint(\"Longitude:\", address.longitude)",
+                    "arguments" : null
+                  },
+                  {
+                    "sample" : "address.longitude",
+                    "lineNumber" : 15,
+                    "columnNumber" : 21,
+                    "fileName" : "index.py",
+                    "excerpt" : "address = geolocator.geocode(location)\n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address)\nprint(\"Latitude:\", address.latitude)\nprint(\"Longitude:\", address.longitude) /* <===  */ ",
+                    "arguments" : null
+                  },
+                  {
+                    "sample" : "print(\"Longitude:\", address.longitude)",
+                    "lineNumber" : 15,
+                    "columnNumber" : 1,
+                    "fileName" : "index.py",
+                    "excerpt" : "address = geolocator.geocode(location)\n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address)\nprint(\"Latitude:\", address.latitude)\nprint(\"Longitude:\", address.longitude) /* <=== __builtin.print */ ",
+                    "arguments" : null
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "sourceId" : "Data.Sensitive.LocationData.PreciseLocation",
+        "sinks" : [
+          {
+            "sinkType" : "leakages",
+            "id" : "Leakages.Log.Console",
+            "name" : "Log Console",
+            "category" : "",
+            "domains" : [
+            ],
+            "sensitivity" : "",
+            "isSensitive" : false,
+            "tags" : {
+              
+            },
+            "apiUrl" : [
+            ],
+            "databaseDetails" : {
+              "dbName" : "",
+              "dbVendor" : "",
+              "dbLocation" : "",
+              "dbOperation" : "",
+              "configFile" : "",
+              "schema" : null
+            },
+            "paths" : [
+              {
+                "pathId" : "44-46",
+                "path" : [
+                  {
+                    "sample" : "address.latitude",
+                    "lineNumber" : 14,
+                    "columnNumber" : 20,
+                    "fileName" : "index.py",
+                    "excerpt" : "# Getting latitude and longitude\naddress = geolocator.geocode(location)\n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address)\nprint(\"Latitude:\", address.latitude) /* <===  */ \nprint(\"Longitude:\", address.longitude)",
+                    "arguments" : null
+                  },
+                  {
+                    "sample" : "print(\"Latitude:\", address.latitude)",
+                    "lineNumber" : 14,
+                    "columnNumber" : 1,
+                    "fileName" : "index.py",
+                    "excerpt" : "# Getting latitude and longitude\naddress = geolocator.geocode(location)\n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address)\nprint(\"Latitude:\", address.latitude) /* <=== __builtin.print */ \nprint(\"Longitude:\", address.longitude)",
+                    "arguments" : null
+                  }
+                ]
+              },
+              {
+                "pathId" : "50-52",
+                "path" : [
+                  {
+                    "sample" : "address.longitude",
+                    "lineNumber" : 15,
+                    "columnNumber" : 21,
+                    "fileName" : "index.py",
+                    "excerpt" : "address = geolocator.geocode(location)\n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address)\nprint(\"Latitude:\", address.latitude)\nprint(\"Longitude:\", address.longitude) /* <===  */ ",
+                    "arguments" : null
+                  },
+                  {
+                    "sample" : "print(\"Longitude:\", address.longitude)",
+                    "lineNumber" : 15,
+                    "columnNumber" : 1,
+                    "fileName" : "index.py",
+                    "excerpt" : "address = geolocator.geocode(location)\n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address)\nprint(\"Latitude:\", address.latitude)\nprint(\"Longitude:\", address.longitude) /* <=== __builtin.print */ ",
+                    "arguments" : null
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
     ],
     "third_parties" : [
+      {
+        "sourceId" : "Data.Sensitive.PersonalIdentification.FirstName",
+        "sinks" : [
+          {
+            "sinkType" : "third_parties",
+            "id" : "ThirdParties.Operator.Apache.Iceberg",
+            "name" : "Apache Iceberg",
+            "category" : "",
+            "domains" : [
+              "iceberg.apache.org"
+            ],
+            "sensitivity" : "",
+            "isSensitive" : false,
+            "tags" : {
+              
+            },
+            "apiUrl" : [
+            ],
+            "databaseDetails" : {
+              "dbName" : "",
+              "dbVendor" : "",
+              "dbLocation" : "",
+              "dbOperation" : "",
+              "configFile" : "",
+              "schema" : null
+            },
+            "paths" : [
+              {
+                "pathId" : "405-408",
+                "path" : [
+                  {
+                    "sample" : "firstName",
+                    "lineNumber" : 23,
+                    "columnNumber" : 22,
+                    "fileName" : "va.py",
+                    "excerpt" : "    )\n      \n    custom_task = DoordashIcebergTableOptimizeOperator(\n        task_id='cutom_task',\n        parameter = \"something\",\n        html_content=firstName, /* <=== ANY */ \n        dag=dag,\n    )",
+                    "arguments" : null
+                  },
+                  {
+                    "sample" : "DoordashIcebergTableOptimizeOperator(task_id = 'cutom_task', parameter = \"something\", html_content = firstName, dag = dag)",
+                    "lineNumber" : 20,
+                    "columnNumber" : 19,
+                    "fileName" : "va.py",
+                    "excerpt" : "        'dag',\n        default_args=default_args,\n        description='DAG with CustomOperator'\n    )\n      \n    custom_task = DoordashIcebergTableOptimizeOperator( /* <=== <unknownFullName> */ \n        task_id='cutom_task',\n        parameter = \"something\",\n        html_content=firstName,\n        dag=dag,\n    )",
+                    "arguments" : null
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
     ]
   },
   "probableSinks" : [
-    "airflow.py",
-    "airflow/operators.py"
+    "geopy/geocoders.py",
+    "airflow.py"
   ],
-  "createdAt" : 1714755402469,
+  "createdAt" : 1715173859670,
   "sinkProcessing" : [
     {
-      "sinkId" : "ThirdParties.Operator.Slackeee",
+      "sinkId" : "ThirdParties.Operator.Apache.Iceberg",
       "occurrences" : [
         {
-          "sample" : "EmailOperator(task_id = 'send_email', to = 'recipient@example.com', subject = 'Email Notification', html_content = email_content, dag = dag)",
+          "sample" : "DoordashIcebergTableOptimizeOperator(task_id = 'cutom_task', parameter = \"something\", html_content = firstName, dag = dag)",
           "lineNumber" : 20,
-          "columnNumber" : 15,
+          "columnNumber" : 19,
+          "fileName" : "va.py",
+          "excerpt" : "        'dag',\n        default_args=default_args,\n        description='DAG with CustomOperator'\n    )\n      \n    custom_task = DoordashIcebergTableOptimizeOperator( /* <=== <unknownFullName> */ \n        task_id='cutom_task',\n        parameter = \"something\",\n        html_content=firstName,\n        dag=dag,\n    )",
+          "arguments" : null
+        }
+      ]
+    },
+    {
+      "sinkId" : "ThirdParties.Operator.MySQL",
+      "occurrences" : [
+        {
+          "sample" : "MySqlOperator(task_id = 'send_email', to = 'recipient@example.com', subject = 'Email Notification', html_content = email_content, dag = dag)",
+          "lineNumber" : 20,
+          "columnNumber" : 18,
+          "fileName" : "main.py",
+          "excerpt" : "         schedule_interval='@once'\n    )\n      \n    email_content = \"Hello\"\n      \n    email_task = MySqlOperator( /* <=== <unknownFullName> */ \n        task_id='send_email',\n        to='recipient@example.com',\n        subject='Email Notification',\n        html_content=email_content,\n        dag=dag",
+          "arguments" : null
+        }
+      ]
+    },
+    {
+      "sinkId" : "ThirdParties.SDK.Geopy.Google",
+      "occurrences" : [
+        {
+          "sample" : "geolocator.geocode(location)",
+          "lineNumber" : 10,
+          "columnNumber" : 11,
           "fileName" : "index.py",
-          "excerpt" : "   schedule_interval='@once'\n )\n\n email_content = \"Hello\"\n\n email_task = EmailOperator( /* <=== airflow/operators.py */ \n   task_id='send_email',\n   to='recipient@example.com',\n   subject='Email Notification',\n   html_content=email_content,\n   dag=dag",
+          "excerpt" : "\n# Location you want to geocode\nlocation = \"Statue of Liberty\"\n\n# Getting latitude and longitude\naddress = geolocator.geocode(location) /* <=== geopy/geocoders.py */ \n\n# Printing address, latitude, and longitude\nprint(\"Location Address:\", address)\nprint(\"Latitude:\", address.latitude)\nprint(\"Longitude:\", address.longitude)",
           "arguments" : null
         }
       ]
@@ -154,14 +560,47 @@
     "skipLists" : [
     ]
   },
-  "localScanPath" : "/Users/ankit-privado/Desktop/value",
+  "localScanPath" : "/Users/ankit-privado/Desktop/privado/testing-repo/Airflow-testing",
   "sources" : [
+    {
+      "sourceType" : "Data Element",
+      "id" : "Data.Sensitive.ContactData.Address",
+      "name" : "Address",
+      "category" : "Contact Data",
+      "sensitivity" : "medium",
+      "isSensitive" : false,
+      "tags" : {
+        "law" : "GDPR"
+      }
+    },
     {
       "sourceType" : "Data Element",
       "id" : "Data.Sensitive.UserContentData.EmailsorTextMessages",
       "name" : "Emails or Text Messages",
       "category" : "User Content Data",
       "sensitivity" : "medium",
+      "isSensitive" : false,
+      "tags" : {
+        "law" : "GDPR"
+      }
+    },
+    {
+      "sourceType" : "Data Element",
+      "id" : "Data.Sensitive.PersonalIdentification.FirstName",
+      "name" : "First Name",
+      "category" : "Personal Identification",
+      "sensitivity" : "low",
+      "isSensitive" : false,
+      "tags" : {
+        "law" : "GDPR"
+      }
+    },
+    {
+      "sourceType" : "Data Element",
+      "id" : "Data.Sensitive.LocationData.PreciseLocation",
+      "name" : "Precise Location",
+      "category" : "Location Data",
+      "sensitivity" : "high",
       "isSensitive" : false,
       "tags" : {
         "law" : "GDPR"
